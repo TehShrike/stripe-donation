@@ -36,7 +36,6 @@
 	</div>
 </form>
 
-
 <style>
 
 * {
@@ -186,7 +185,14 @@ export default {
 		handleSubmit(event) {
 			event.preventDefault()
 
-			console.log('SUBMIT!')
+			const handler = this.get('handler')
+			const amount = this.get('currentDonationAmount')
+
+			handler.open({
+				name: 'Biblical Blueprints',
+				description: `${amount}$ donation`,
+				amount: amount * 100
+			})
 		}
 	}
 }

@@ -3,7 +3,7 @@ import babel from 'rollup-plugin-babel'
 import svelte from 'rollup-plugin-svelte'
 
 export default {
-	format: 'cjs',
+	format: 'iife',
 	plugins: [
 		svelte(),
 		resolve(),

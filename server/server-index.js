@@ -8,19 +8,16 @@ const conditionalGet = require('koa-conditional-get')
 
 const app = new Koa()
 
-// router.get('/:dataType(game|video)', async (context, next) => {
-// 	const { dataType } = context.params
+router.post('/submit-donation', async (context, next) => {
+	const { token } = context.params
 
-// 	context.set('Content-Type', 'application/javascript')
-// 	context.set('Cache-Control', 'public, must-revalidate')
+	context.set('Content-Type', 'application/javascript')
 
-// 	context.set('Last-Modified', lastModified.toUTCString())
-
-// 	if (context.stale) {
-// 		await next()
-// 		context.body = await dataPromise
-// 	}
-// })
+	if (context.stale) {
+		await next()
+		context.body = `{ "yes": true }`
+	}
+})
 
 app.use(conditionalGet())
 
