@@ -1,0 +1,193 @@
+<form on:submit="handleSubmit(event)">
+	<div class="group">
+		<label>
+			<span>Amount</span>
+			<input
+				type="number"
+				class="field text-field"
+				placeholder="{{defaultAmount}}$"
+				bind:value="amountInput"
+				on:change="validateAmount(amountInput)"
+			>
+		</label>
+		<label>
+			<span>Monthly</span>
+			<input
+				type="radio"
+				class="field"
+				bind:group="frequency"
+				value="monthly"
+			>
+		</label>
+		<label>
+			<span>Once</span>
+			<input
+				type="radio"
+				class="field"
+				bind:group="frequency"
+				value="once"
+			>
+		</label>
+	</div>
+	<div class="group">
+		<button type="submit">
+			Donate {{currentDonationAmount}}$ {{frequency}}
+		</button>
+	</div>
+</form>
+
+
+<style>
+
+* {
+	font-family: "Helvetica Neue", Helvetica;
+	font-size: 15px;
+	font-variant: normal;
+	padding: 0;
+	margin: 0;
+}
+
+form {
+	width: 300px;
+	margin: 10px auto;
+}
+
+.group {
+	background: white;
+	box-shadow: 0 7px 14px 0 rgba(49,49,93,0.10), 0 3px 6px 0 rgba(0,0,0,0.08);
+	border-radius: 4px;
+	margin-bottom: 20px;
+}
+
+label {
+	position: relative;
+	color: #8898AA;
+	font-weight: 300;
+	height: 40px;
+	line-height: 40px;
+	margin-left: 20px;
+	display: block;
+}
+
+.text-field {
+	cursor: text;
+}
+
+.field {
+	background: transparent;
+	font-weight: 300;
+	border: 0;
+	color: #31325F;
+	outline: none;
+	padding-right: 10px;
+	padding-left: 10px;
+	width: 70%;
+	height: 40px;
+	float: right;
+}
+
+.field::-webkit-input-placeholder { color: #CFD7E0; }
+.field::-moz-placeholder { color: #CFD7E0; }
+.field:-ms-input-placeholder { color: #CFD7E0; }
+
+label .field.is-focused + span span,
+label .field:not(.is-empty) + span span {
+	transform: scale(0.68) translateY(-36px);
+	cursor: default;
+}
+
+label .field.is-focused + span {
+	border-bottom-color: #34D08C;
+}
+
+.field.is-empty:not(.is-focused) {
+	opacity: 0;
+}
+
+label {
+	position: relative;
+	color: #8898AA;
+	font-weight: 300;
+	height: 40px;
+	line-height: 40px;
+	margin-left: 20px;
+	display: block;
+}
+
+label > span {
+	width: 20%;
+	text-align: right;
+	float: left;
+}
+
+button {
+	cursor: pointer;
+
+	float: left;
+	display: block;
+	background: #666EE8;
+	color: white;
+	box-shadow: 0 7px 14px 0 rgba(49,49,93,0.10),
+	            0 3px 6px 0 rgba(0,0,0,0.08);
+	border-radius: 4px;
+	border: 0;
+	margin-top: 20px;
+	font-size: 15px;
+	font-weight: 400;
+	width: 100%;
+	height: 40px;
+	line-height: 38px;
+	outline: none;
+}
+
+button:focus {
+	background: #555ABF;
+}
+
+button:active {
+	background: #43458B;
+}
+
+</style>
+
+<script>
+
+const MIN_DONATION_AMOUNT = 5
+
+function validateDonationAmount(input) {
+	const intAmount = parseInt(input, 10)
+	if (intAmount < MIN_DONATION_AMOUNT) {
+		return MIN_DONATION_AMOUNT
+	}
+
+	return intAmount
+}
+
+export default {
+	data() {
+		return {
+			defaultAmount: 50,
+			amountInput: '',
+			frequency: 'monthly'
+		}
+	},
+	computed: {
+		currentDonationAmount: (defaultAmount, amountInput) => amountInput ? validateDonationAmount(amountInput) : defaultAmount
+	},
+	methods: {
+		validateAmount(amountInput) {
+			const current = this.get('currentDonationAmount')
+			if (amountInput !== current.toString()) {
+				this.set({
+					amountInput: validateDonationAmount(amountInput)
+				})
+			}
+		},
+		handleSubmit(event) {
+			event.preventDefault()
+
+			console.log('SUBMIT!')
+		}
+	}
+}
+</script>

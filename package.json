@@ -1,0 +1,34 @@
+{
+  "name": "stripe-donation",
+  "private": true,
+  "engines": {
+    "node": ">=7.6.0"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "client/index.js",
+  "scripts": {
+    "build": "rollup -c -o public/build.js client/index.js",
+    "watch": "rollup -c -w --dev --sourcemap -o public/build.js client/index.js",
+    "start": "node server.js",
+    "startdev": "nodemon server.js"
+  },
+  "author": "TehShrike",
+  "license": "WTFPL",
+  "devDependencies": {
+    "nodemon": "1.11.0"
+  },
+  "dependencies": {
+    "koa": "2.2.0",
+    "koa-compress": "2.0.0",
+    "koa-conditional-get": "2.0.0",
+    "koa-router": "7.1.1",
+    "koa-static": "3.0.0",
+    "loud-rejection": "1.6.0",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-node-resolve": "3.0.0",
+    "rollup-plugin-svelte": "1.6.1",
+    "rollup-watch": "3.2.2"
+  }
+}
