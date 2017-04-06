@@ -1,22 +1,16 @@
 import DonationWidget from './DonationWidget.html'
+import post from './post'
+import createCheckoutOpenFunction from './checkout'
+import createAction from './create-action'
 
 const widget = new DonationWidget({
 	target: document.getElementById('target')
 })
 
-const handler = StripeCheckout.configure({
-	key: 'pk_test_aK1m1Va97O5mDHkJzxU83okp',
-	// image: 'http://localhost.com:8888/bb.png',
-	locale: 'auto',
-	token: token => {
-		widget.set({ token })
-		console.log('wat?', token)
-		// this.set({
-		// 	token
-		// })
-		// You can access the token ID with `token.id`.
-		// Get the token ID to your server-side code for use.
-	}
-})
+const postDonation = donationDetails => post(`/submit-donation/${donationDetails.frequency}`, donationDetails)
+const donationAction = createAction(widget, widget.handleDonationPostResponse, widget.handleError, postDonation)
+widget.on('submitDonation', donationAction)
 
-widget.set({ handler })
+const openCheckout = createCheckoutOpenFunction()
+const checkoutAction = createAction(widget, widget.handleToken, widget.handleError, openCheckout)
+widget.on('openCheckout', checkoutAction)
