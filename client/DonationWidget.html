@@ -37,6 +37,11 @@
 			{{errorMessage}}
 		</div>
 		{{/if}}
+		{{#if successMessage}}
+		<div class="success">
+			{{successMessage}}
+		</div>
+		{{/if}}
 	</div>
 </form>
 
@@ -120,6 +125,8 @@ button {
 	height: 40px;
 	line-height: 38px;
 	outline: none;
+
+	cursor: pointer;
 }
 
 button:focus {
@@ -139,11 +146,7 @@ button:active {
 }
 
 .success, .error {
-	display: none;
 	font-size: 13px;
-}
-
-.success.visible, .error.visible {
 	display: inline;
 }
 
@@ -222,7 +225,9 @@ export default {
 			})
 		},
 		handleDonationPostResponse(response) {
-			console.log('server responded with', response)
+			this.set({
+				successMessage: response.message
+			})
 		}
 	}
 }

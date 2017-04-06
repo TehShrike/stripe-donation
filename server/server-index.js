@@ -21,7 +21,7 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 
 	const paymentFrequencies = {
 		monthly: async ({ email, token, dollars }) => {
-			console.log('Creating a monthly subscription for', email, 'with token', token, 'and quantity', dollars)
+			console.log('Creating a monthly donation for', email, 'with token', token, 'and quantity', dollars)
 			const customer = await createCustomer({
 				email,
 				source: token
@@ -33,7 +33,7 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 			})
 
 			return {
-				message: `Successfully created a subscription for ${email}!`
+				message: `Successfully created a monthly donation for ${email}!`
 			}
 		},
 		once: async ({ email, token, dollars }) => {
@@ -45,7 +45,7 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 				source: token
 			})
 			return {
-				message: `Successfully created a single donation for ${email}!`
+				message: `Successfully processed a donation for ${email}!`
 			}
 		}
 	}
