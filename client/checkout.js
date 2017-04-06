@@ -4,10 +4,7 @@ export default function createCheckoutOpenFunction() {
 		key: 'pk_test_aK1m1Va97O5mDHkJzxU83okp',
 		image: './bb.png',
 		locale: 'auto',
-		token: token => {
-			console.log('token!', token)
-			resolveToken(token)
-		}
+		token: token => resolveToken(token)
 	})
 
 	return options => {
