@@ -2,16 +2,27 @@ require('loud-rejection/register')
 
 const Koa = require('koa')
 const serve = require('koa-static')
-const router = require('koa-router')()
 const compress = require('koa-compress')
 const conditionalGet = require('koa-conditional-get')
 const bodyParser = require('koa-bodyparser')
 
+const createRouter = require('./router')
+
 const Stripe = require('stripe')
 
-module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription }) {
+const indexHtmlTemplate = require('fs').readFileSync(__dirname + '/index.html', { encoding: 'utf8' })
+
+module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription, bodyStyle }) {
 	console.log('Starting Stripe with key', stripeSecretKey)
 	const stripe = Stripe(stripeSecretKey)
+
+	const indexHtml = indexHtmlTemplate.replace('<!-- style -->', () => `
+		<style>
+			body {
+				${bodyStyle}
+			}
+		</style>
+`)
 
 	const app = new Koa()
 
@@ -50,27 +61,40 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 		}
 	}
 
-	router.post('/submit-donation/:frequency(monthly|once)', async (context, next) => {
-		const { email, token, dollars } = context.request.body
-		const { frequency } = context.params
+	const routerMiddleware = createRouter({
+		POST: {
+			'/submit-donation/:frequency(monthly|once)': async (context, next) => {
+				const { email, token, dollars } = context.request.body
+				const { frequency } = context.params
 
-		context.set('Content-Type', 'application/json')
+				context.set('Content-Type', 'application/json')
 
-		console.log('Creating customer for', email, 'with source', token)
+				console.log('Creating customer for', email, 'with source', token)
 
-		const createPayment = paymentFrequencies[frequency]
+				const createPayment = paymentFrequencies[frequency]
 
-		try {
-			context.body = await createPayment({ email, token, dollars })
-		} catch (e) {
-			context.status = 500
-			console.log('error:', e.message, e)
-			context.body = e.message
+				try {
+					context.body = await createPayment({ email, token, dollars })
+				} catch (e) {
+					context.status = 500
+					console.log('error:', e.message, e)
+					context.body = e.message
+				}
+
+				console.log('responding with', context.body)
+			}
+		},
+		GET: {
+			'/': async context => {
+				context.body = indexHtml
+			}
 		}
-
-		console.log('responding with', context.body)
 	})
 
+	app.use(async (context, next) => {
+		console.log(context.url)
+		await next()
+	})
 
 	app.use(conditionalGet())
 
@@ -78,7 +102,7 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 
 	app.use(compress())
 
-	app.use(router.routes())
+	app.use(routerMiddleware)
 
 	app.use(serve('./public/'))
 
