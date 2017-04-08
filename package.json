@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "koa": "2.2.0",
+    "koa-bestest-router": "1.0.0",
     "koa-bodyparser": "4.2.0",
     "koa-compress": "2.0.0",
     "koa-conditional-get": "2.0.0",

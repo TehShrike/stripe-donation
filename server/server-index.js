@@ -6,7 +6,7 @@ const compress = require('koa-compress')
 const conditionalGet = require('koa-conditional-get')
 const bodyParser = require('koa-bodyparser')
 
-const createRouter = require('./router')
+const createRouter = require('koa-bestest-router')
 
 const Stripe = require('stripe')
 
