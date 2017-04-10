@@ -1,33 +1,13 @@
-require('loud-rejection/register')
-
-const Koa = require('koa')
-const serve = require('koa-static')
-const compress = require('koa-compress')
-const conditionalGet = require('koa-conditional-get')
-const bodyParser = require('koa-bodyparser')
 const createRouter = require('koa-bestest-router')
+const Stripe = require('stripe')
 
 const createEmailSender = require('./email-sender')
 
-const Stripe = require('stripe')
-
-const indexHtmlTemplate = require('fs').readFileSync(__dirname + '/index.html', { encoding: 'utf8' })
-
-module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription, bodyStyle, email }) {
+module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription, email }) {
 	const sendEmails = createEmailSender(email)
 
 	console.log('Starting Stripe with key', stripeSecretKey)
 	const stripe = Stripe(stripeSecretKey)
-
-	const indexHtml = indexHtmlTemplate.replace('<!-- style -->', () => `
-		<style>
-			body {
-				${bodyStyle}
-			}
-		</style>
-`)
-
-	const app = new Koa()
 
 	const createSubscription = promisify(stripe.subscriptions, 'create')
 	const createCustomer = promisify(stripe.customers, 'create')
@@ -64,7 +44,7 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 		}
 	}
 
-	const routerMiddleware = createRouter({
+	return createRouter({
 		POST: {
 			'/submit-donation/:frequency(monthly|once)': async (context, next) => {
 				const { email, token, dollars } = context.request.body
@@ -94,25 +74,8 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 					}
 				}
 			}
-		},
-		GET: {
-			'/': async context => {
-				context.body = indexHtml
-			}
 		}
 	})
-
-	app.use(conditionalGet())
-
-	app.use(bodyParser())
-
-	app.use(compress())
-
-	app.use(routerMiddleware)
-
-	app.use(serve('./public/'))
-
-	return app
 }
 
 function promisify(object, methodName) {

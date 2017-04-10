@@ -3,12 +3,24 @@ import babel from 'rollup-plugin-babel'
 import svelte from 'rollup-plugin-svelte'
 
 export default {
-	format: 'iife',
+	format: 'cjs',
 	plugins: [
 		svelte(),
-		resolve(),
+		resolve({
+			main: false,
+			browser: true
+		}),
 		babel({
-			exclude: 'node_modules/**' // only transpile our source code
+			exclude: 'node_modules/**',
+
+			"presets": [
+				[
+					"es2015",
+					{
+						"modules": false
+					}
+				]
+			]
 		})
 	]
 }

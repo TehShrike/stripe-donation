@@ -1,11 +1,8 @@
-export default function createCheckoutOpenFunction() {
+export default function createCheckoutOpenFunction(stripeCheckoutOptions) {
 	let resolveToken = null
-	const handler = StripeCheckout.configure({
-		key: 'pk_test_aK1m1Va97O5mDHkJzxU83okp',
-		image: './bb.png',
-		locale: 'auto',
+	const handler = StripeCheckout.configure(Object.assign({
 		token: token => resolveToken(token)
-	})
+	}, stripeCheckoutOptions))
 
 	return options => {
 		const { amount, dollars, frequency, name, description } = options

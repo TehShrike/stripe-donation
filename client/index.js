@@ -3,14 +3,18 @@ import post from './post'
 import createCheckoutOpenFunction from './checkout'
 import createAction from './create-action'
 
-const widget = new DonationWidget({
-	target: document.getElementById('target')
-})
+export default function instantiateWidget({ target, stripeCheckoutOptions }) {
+	const widget = new DonationWidget({
+		target
+	})
 
-const postDonation = donationDetails => post(`/submit-donation/${donationDetails.frequency}`, donationDetails)
-const donationAction = createAction(widget, widget.handleDonationPostResponse, widget.handleError, postDonation)
-widget.on('submitDonation', donationAction)
+	const postDonation = donationDetails => post(`/submit-donation/${donationDetails.frequency}`, donationDetails)
+	const donationAction = createAction(widget, widget.handleDonationPostResponse, widget.handleError, postDonation)
+	widget.on('submitDonation', donationAction)
 
-const openCheckout = createCheckoutOpenFunction()
-const checkoutAction = createAction(widget, widget.handleToken, widget.handleError, openCheckout)
-widget.on('openCheckout', checkoutAction)
+	const openCheckout = createCheckoutOpenFunction(stripeCheckoutOptions)
+	const checkoutAction = createAction(widget, widget.handleToken, widget.handleError, openCheckout)
+	widget.on('openCheckout', checkoutAction)
+
+	return widget
+}
