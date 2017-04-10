@@ -6,7 +6,6 @@ const createEmailSender = require('./email-sender')
 module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription, email }) {
 	const sendEmails = createEmailSender(email)
 
-	console.log('Starting Stripe with key', stripeSecretKey)
 	const stripe = Stripe(stripeSecretKey)
 
 	const createSubscription = promisify(stripe.subscriptions, 'create')
