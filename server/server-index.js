@@ -5,14 +5,17 @@ const serve = require('koa-static')
 const compress = require('koa-compress')
 const conditionalGet = require('koa-conditional-get')
 const bodyParser = require('koa-bodyparser')
-
 const createRouter = require('koa-bestest-router')
+
+const createEmailSender = require('./email-sender')
 
 const Stripe = require('stripe')
 
 const indexHtmlTemplate = require('fs').readFileSync(__dirname + '/index.html', { encoding: 'utf8' })
 
-module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription, bodyStyle }) {
+module.exports = function createServer({ stripeSecretKey, stripePlanId, subscriptionDescription, bodyStyle, email }) {
+	const sendEmails = createEmailSender(email)
+
 	console.log('Starting Stripe with key', stripeSecretKey)
 	const stripe = Stripe(stripeSecretKey)
 
@@ -75,13 +78,21 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 
 				try {
 					context.body = await createPayment({ email, token, dollars })
+
+					process.nextTick(() => {
+						sendEmails({ email, frequency, dollars }).catch(err => {
+							console.error('Error sending emails about the', dollars, 'donation by ', email, '(', frequency, ')')
+							console.error(err.message && err)
+						})
+					})
 				} catch (e) {
 					context.status = 500
-					console.log('error:', e.message, e)
-					context.body = e.message
+					console.log('payment processing error:', e.message, e)
+					context.body = {
+						error: true,
+						message: e.message
+					}
 				}
-
-				console.log('responding with', context.body)
 			}
 		},
 		GET: {
@@ -89,11 +100,6 @@ module.exports = function createServer({ stripeSecretKey, stripePlanId, subscrip
 				context.body = indexHtml
 			}
 		}
-	})
-
-	app.use(async (context, next) => {
-		console.log(context.url)
-		await next()
 	})
 
 	app.use(conditionalGet())

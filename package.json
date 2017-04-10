@@ -6,7 +6,7 @@
   },
   "version": "1.0.0",
   "description": "",
-  "main": "client/index.js",
+  "main": "server/server-index.js",
   "scripts": {
     "build": "rollup -c -o public/build.js client/index.js",
     "watch": "rollup -c -w --dev --sourcemap -o public/build.js client/index.js",
@@ -16,7 +16,13 @@
   "author": "TehShrike",
   "license": "WTFPL",
   "devDependencies": {
-    "nodemon": "1.11.0"
+    "nodemon": "1.11.0",
+    "rollup": "0.41.6",
+    "rollup-plugin-babel": "2.7.1",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-node-resolve": "3.0.0",
+    "rollup-plugin-svelte": "1.6.1",
+    "rollup-watch": "3.2.2"
   },
   "dependencies": {
     "koa": "2.2.0",
@@ -26,12 +32,8 @@
     "koa-conditional-get": "2.0.0",
     "koa-static": "3.0.0",
     "loud-rejection": "1.6.0",
+    "nodemailer": "4.0.0",
     "path-match": "1.2.4",
-    "rollup-plugin-babel": "2.7.1",
-    "rollup-plugin-commonjs": "8.0.2",
-    "rollup-plugin-node-resolve": "3.0.0",
-    "rollup-plugin-svelte": "1.6.1",
-    "rollup-watch": "3.2.2",
     "stripe": "4.17.1"
   }
 }
