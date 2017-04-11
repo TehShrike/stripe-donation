@@ -11,9 +11,8 @@ export default function post(url, data) {
 		function handleResult() {
 			try {
 				const response = JSON.parse(request.responseText)
-				success(request) ?
-					resolve(response) :
-					reject(response)
+
+				success(request) ? resolve(response) : reject(response)
 			} catch (e) {
 				reject('Invalid response: ' + request.responseText)
 			}

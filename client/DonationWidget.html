@@ -37,9 +37,9 @@
 			{{errorMessage}}
 		</div>
 		{{/if}}
-		{{#if successMessage}}
-		<div class="success">
-			{{successMessage}}
+		{{#if message}}
+		<div class="message">
+			{{message}}
 		</div>
 		{{/if}}
 	</div>
@@ -148,7 +148,7 @@ button:active {
 	text-align: center;
 }
 
-.success, .error {
+.message, .error {
 	font-size: 13px;
 	display: inline;
 }
@@ -157,11 +157,11 @@ button:active {
 	color: #E4584C;
 }
 
-.success {
+.message {
 	color: #666EE8;
 }
 
-.success .token {
+.message .token {
 	font-weight: 500;
 	font-size: 13px;
 }
@@ -213,10 +213,15 @@ export default {
 				dollars,
 				frequency: this.get('frequency')
 			})
+
+			this.set({
+				message: 'Processing donation...'
+			})
 		},
 		handleError(error) {
 			this.set({
-				errorMessage: error.message || error.toString()
+				errorMessage: error ? (error.message || error.toString()) : 'Error!',
+				message: ''
 			})
 		},
 		handleToken({ email, id, dollars, frequency }) {
@@ -229,7 +234,7 @@ export default {
 		},
 		handleDonationPostResponse(response) {
 			this.set({
-				successMessage: response.message
+				message: response.message
 			})
 		}
 	}
