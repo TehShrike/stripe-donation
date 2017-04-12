@@ -213,10 +213,6 @@ export default {
 				dollars,
 				frequency: this.get('frequency')
 			})
-
-			this.set({
-				message: 'Processing donation...'
-			})
 		},
 		handleError(error) {
 			this.set({
@@ -225,6 +221,10 @@ export default {
 			})
 		},
 		handleToken({ email, id, dollars, frequency }) {
+			this.set({
+				message: 'Processing donation...'
+			})
+
 			this.fire('submitDonation', {
 				email,
 				token: id,
