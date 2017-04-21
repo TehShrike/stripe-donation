@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer')
+const entries = require('ordered-entries')
 
 module.exports = ({ nodemailerTransportOptions, receiptEmailOptions, logEmailOptions }) => {
 	const transporter = nodemailer.createTransport(nodemailerTransportOptions)
@@ -34,10 +35,4 @@ function mapObject(o, fn) {
 		map[key]  = fn(value)
 		return map
 	}, Object.create(null))
-}
-
-function entries(o) {
-	return Object.getOwnPropertyNames(o).map(key => {
-		return [ key, o[key] ]
-	})
 }

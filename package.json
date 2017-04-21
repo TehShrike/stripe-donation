@@ -29,6 +29,7 @@
     "koa-bestest-router": "1.0.0",
     "loud-rejection": "1.6.0",
     "nodemailer": "4.0.0",
+    "ordered-entries": "1.0.0",
     "stripe": "4.17.1"
   }
 }
